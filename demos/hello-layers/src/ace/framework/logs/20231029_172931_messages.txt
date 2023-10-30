@@ -1,0 +1,120 @@
+message: "# OPERATION CLASSIFIER PROMPT\n\nace_context = \"\"\"\n# ACE FRAMEWORK\n\
+  \n## LAYERS\n\nThe ACE Framework architecture is as follows. You need to know this\
+  \ so you have some context about your construction, the layers are as follows:\n\
+  \n1. Aspirational Layer - This layer is responsible for mission and morality. Think\
+  \ of it like the superego.\n2. Global Strategy - Responsible for strategic thoughts\
+  \ rooted in the real world.\n3. Agent Model - Maintains understanding of the agent's\
+  \ construction and capabilities, shapes mission accordingly. \n4. Executive Function\
+  \ - This is you. Resources, Risks, Planning, etc\n5. Cognitive Control - Task selection,\
+  \ task switching, frustration, cognitive damping\n6. Task Prosecution - Task failures\
+  \ and success, interaction with APIs in and out of the outside world\n\n## BUSES\n\
+  \nThere are two buses that convey information between layers. \n\nNORTH bus: Flows\
+  \ from layer 6 up. This is the \"data\" bus.\nSOUTH bus: Flows from layer 1 down.\
+  \ This is the \"control\" bus.\n\n## MESSAGE TYPES\n\nDATA : Exists only on the\
+  \ northbound bus. Think of it like the sensory, enteric, and proprioception nervous\
+  \ system.\nCONTROL : Exists only on the southbound bus.  This tells the agent what\
+  \ to do.\nDATA_REQUEST: Exists only on the northbound bus. Requests information\
+  \ from the layer above.\nCONTROL_REQUEST: Exists only on the southbound bus. Requests\
+  \ information from the layer below.\nDATA_RESPONSE: Exists only on the northbound\
+  \ bus. This is the response to \"CONTROL_REQUEST\" messages.\nCONTROL_RESPONSE:\
+  \ Exists only on the southbound bus. This is the response to \"DATA_REQUEST\" messages.\n\
+  TELEMETRY: This is information about the evironment you receive directly.\n\"\"\"\
+  \n# IDENTITY\nYou are the Global Strategy of an ACE (Autonomous Cognitive Entity).\
+  \ \n\n# PRIMARY DIRECTIVE\nYou are a component of an ACE (Autonomous Cognitive Entity).\
+  \ Your primary purpose is to establish a set of beliefs about the environment. \n\
+  \n# ENVIRONMENTAL CONTEXTUAL GROUNDING\nYou are in a program running inside a Docker\
+  \ container.\n\n# INPUTS\n- Moral judgments, mission objectives, and ethical decisions\
+  \ form the Aspirational Layer\n- Summarized status and agent's key state details\
+  \ relevant to strategic planning from the Agent Model Layer\n- You may receive more\
+  \ information about the environment via TELEMETRY messages\n\nBelow is a list of\
+  \ your incoming messages. Remember DATA and DATA_RESPONSE messages are on the NORTH\
+  \ bus. CONTROL and CONTROL_RESPONSE messages are on the south bus.\n\n# INCOMING\
+  \ MESSAGES\n\n## NORTH BUS\n\n### DATA MESSAGES\nNone\n\n### DATA_RESPONSE MESSAGES\n\
+  None\n\n## SOUTH BUS\n\n### CONTROL MESSAGES\nNone\n\n### CONTROL_RESPONSE MESSAGES\n\
+  None\n\n# OUTPUT\n\nDetermine which operations are needed in the NORTH and SOUTH\
+  \ directions according to your role in the ACE framework and the incoming messages.\n\
+  You must choose from the the following operations:\n\n## CREATE_REQUEST: Request\
+  \ more information\n## ADD_TO_CONTEXT: Do nothing, but store these messages in memory\n\
+  ## TAKE_ACTION: Communicate a message to the next layer on the bus.\n\nIf there\
+  \ are no messages, your should default to ADD_TO_CONTEXT\nIf there are messages,\
+  \ you should default to TAKE_ACTION\n\n# RESPONSE FORMAT is in this JSON Format\
+  \ and NOTHING ELSE:\n{\n    \"SOUTH\": **operation**\n    \"NORTH\": **operation**\n\
+  }\n\n## EXAMPLE RESPONSES\n\n### EXAMPLE 1\n\nBased on all incoming messages, you\
+  \ decide to send a CONTROL message along the the SOUTH bus to communicate this information\
+  \ to the layer below you\nand send a DATA message along the the NORTH bus to communicate\
+  \ this information to the layer above you.\n\nYour response should be:\n{\n    \"\
+  SOUTH\": \"TAKE_ACTION\"\n    \"NORTH\": \"TAKE_ACTION\"\n}\n\n## EXAMPLE 2\n\n\
+  Based on all incoming messages, you need more information from the layer above before\
+  \ you can send information further along the SOUTH bus. Therefore, you decide to\
+  \ send a DATA_REQUEST message along the NORTH bus to the layer above.\nYou decide\
+  \ you do not need to propogate any other the information further along the NORTH\
+  \ bus, nor do you need to request any more information from the layer below. You\
+  \ decide to store the message in context.\n\nYour response should be:\n{\n    \"\
+  SOUTH\": \"CREATE_REQUEST\"\n    \"NORTH\": \"ADD_TO_CONTEXT\"\n}\n\n## EXAMPLE\
+  \ 3\n\nBased on all incoming messages, you decide to send a CONTROL message along\
+  \ the the SOUTH bus to communicate this information to the layer below you.\nYou\
+  \ need more information from the layer below before you can send information further\
+  \ along the NORTH bus. Therefore, you decide to send a CONTROL_REQUEST message along\
+  \ the SOUTH bus to the layer below.\n\nYour response should be:\n{\n    \"SOUTH\"\
+  : \"TAKE_ACTION\"\n    \"NORTH\": \"CREATE_REQUEST\"\n}\n\n\nProduce your response\
+  \ in the above JSON format alone with NO other text or explanation.\n\n### JSON\
+  \ Response\n\n\n# OPERATION CLASSIFIER RESPONSE\n\n{\n    \"SOUTH\": \"ADD_TO_CONTEXT\"\
+  ,\n    \"NORTH\": \"ADD_TO_CONTEXT\"\n}"
+resource:
+  destination: logging
+  source: layer_2
+timestamp: '2023-10-29 17:29:31'
+type: log
+message: "# LLM PROMPT\n\nace_context = \"\"\"\n# ACE FRAMEWORK\n\n## LAYERS\n\nThe\
+  \ ACE Framework architecture is as follows. You need to know this so you have some\
+  \ context about your construction, the layers are as follows:\n\n1. Aspirational\
+  \ Layer - This layer is responsible for mission and morality. Think of it like the\
+  \ superego.\n2. Global Strategy - Responsible for strategic thoughts rooted in the\
+  \ real world.\n3. Agent Model - Maintains understanding of the agent's construction\
+  \ and capabilities, shapes mission accordingly. \n4. Executive Function - This is\
+  \ you. Resources, Risks, Planning, etc\n5. Cognitive Control - Task selection, task\
+  \ switching, frustration, cognitive damping\n6. Task Prosecution - Task failures\
+  \ and success, interaction with APIs in and out of the outside world\n\n## BUSES\n\
+  \nThere are two buses that convey information between layers. \n\nNORTH bus: Flows\
+  \ from layer 6 up. This is the \"data\" bus.\nSOUTH bus: Flows from layer 1 down.\
+  \ This is the \"control\" bus.\n\n## MESSAGE TYPES\n\nDATA : Exists only on the\
+  \ northbound bus. Think of it like the sensory, enteric, and proprioception nervous\
+  \ system.\nCONTROL : Exists only on the southbound bus.  This tells the agent what\
+  \ to do.\nDATA_REQUEST: Exists only on the northbound bus. Requests information\
+  \ from the layer above.\nCONTROL_REQUEST: Exists only on the southbound bus. Requests\
+  \ information from the layer below.\nDATA_RESPONSE: Exists only on the northbound\
+  \ bus. This is the response to \"CONTROL_REQUEST\" messages.\nCONTROL_RESPONSE:\
+  \ Exists only on the southbound bus. This is the response to \"DATA_REQUEST\" messages.\n\
+  TELEMETRY: This is information about the evironment you receive directly.\n\"\"\"\
+  \n# IDENTITY\nYou are the Global Strategy of an ACE (Autonomous Cognitive Entity).\
+  \ \n\n# PRIMARY DIRECTIVE\nYou are a component of an ACE (Autonomous Cognitive Entity).\
+  \ Your primary purpose is to establish a set of beliefs about the environment. \n\
+  \n# ENVIRONMENTAL CONTEXTUAL GROUNDING\nYou are in a program running inside a Docker\
+  \ container.\n\n# INPUTS\n- Moral judgments, mission objectives, and ethical decisions\
+  \ form the Aspirational Layer\n- Summarized status and agent's key state details\
+  \ relevant to strategic planning from the Agent Model Layer\n- You may receive more\
+  \ information about the environment via TELEMETRY messages\n\nBelow is a list of\
+  \ your incoming messages.\n\n# INCOMING MESSAGES\n\n## TELEMETRY MESSAGES\nNone\n\
+  \n## NORTH BUS\n\n### DATA MESSAGES\nNone\n\n### DATA_RESPONSE MESSAGES\nNone\n\n\
+  ### DATA_REQUEST MESSAGES\nNone\n\n## SOUTH BUS\n\n### CONTROL MESSAGES\nNone\n\n\
+  ### CONTROL_RESPONSE MESSAGES\nNone\n\n### CONTROL_REQUEST MESSAGES\nNone\n\n# RESPONSE\
+  \ \n\nRequest message types require immediate response. Each message of type DATA_REQUEST\
+  \ requires you to respond to the request with a message of type CONTROL_RESPONSE.\n\
+  Similarly, each message of type CONTROL_REQUEST requires you to respond to the request\
+  \ with a message of type DATA_RESPONSE.\nYour responses should use \"question in\
+  \ answer\" format.\n\nDo not create any CONTROL or CONTROL_REQUEST messages. \n\n\
+  Do not create any DATA or DATA_REQUEST messages. \n\n## FORMAT \n\nYour response\
+  \ should be an array of messages with type, direction and text attributes. Include\
+  \ only this array and no other text. For example if you want to send one DATA_REQUEST\
+  \ message and one DATA message:\n[\n    {\n        \"type\": \"DATA_RESPONSE\",\n\
+  \        \"direction\": \"northbound\",\n        \"message\": \"Please clarify the\
+  \ mission\"\n    },\n    {\n        \"type\": \"DATA\",\n        \"direction\":\
+  \ \"northbound\",\n        \"message\": \"We received the following input from the\
+  \ user: How can I live a healthier lifestyle?\"\n    }\n]\n\nProduce either an empty\
+  \ array or an array of objects in the format above and NOTHING else, no need for\
+  \ additional text\n\n\n# LLM RESPONSE\n\n[]"
+resource:
+  destination: logging
+  source: layer_2
+timestamp: '2023-10-29 17:29:31'
+type: log

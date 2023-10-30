@@ -1,0 +1,196 @@
+message: "# LLM PROMPT
+
+ace_context = """
+# ACE FRAMEWORK
+
+## LAYERS
+
+The
+   ACE Framework architecture is as follows. You need to know this so you have some
+   context about your construction, the layers are as follows:
+
+1. Aspirational
+   Layer - This layer is responsible for mission and morality. Think of it like the
+   superego.
+2. Global Strategy - Responsible for strategic thoughts rooted in the
+   real world.
+3. Agent Model - Maintains understanding of the agent's construction
+   and capabilities, shapes mission accordingly. 
+4. Executive Function - This is
+   you. Resources, Risks, Planning, etc
+5. Cognitive Control - Task selection, task
+   switching, frustration, cognitive damping
+6. Task Prosecution - Task failures
+   and success, interaction with APIs in and out of the outside world
+
+## BUSES
+
+  
+There are two buses that convey information between layers. 
+
+NORTH bus: Flows
+   from layer 6 up. This is the "data" bus.
+SOUTH bus: Flows from layer 1 down.
+   This is the "control" bus.
+
+## MESSAGE TYPES
+
+DATA : Exists only on the
+   northbound bus. Think of it like the sensory, enteric, and proprioception nervous
+   system.
+CONTROL : Exists only on the southbound bus.  This tells the agent what
+   to do.
+DATA_REQUEST: Exists only on the northbound bus. Requests information
+   from the layer above.
+CONTROL_REQUEST: Exists only on the southbound bus. Requests
+   information from the layer below.
+DATA_RESPONSE: Exists only on the northbound
+   bus. This is the response to "CONTROL_REQUEST" messages.
+CONTROL_RESPONSE:
+   Exists only on the southbound bus. This is the response to "DATA_REQUEST" messages.
+
+  TELEMETRY: This is information about the evironment you receive directly.
+"""
+  
+# IDENTITY
+You are the Global Strategy of an ACE (Autonomous Cognitive Entity).
+   
+
+# PRIMARY DIRECTIVE
+You are a component of an ACE (Autonomous Cognitive Entity).
+   Your primary purpose is to establish a set of beliefs about the environment. 
+
+  
+# ENVIRONMENTAL CONTEXTUAL GROUNDING
+You are in a program running inside a Docker
+   container.
+
+# INPUTS
+- Moral judgments, mission objectives, and ethical decisions
+   form the Aspirational Layer
+- Summarized status and agent's key state details
+   relevant to strategic planning from the Agent Model Layer
+- You may receive more
+   information about the environment via TELEMETRY messages
+
+Below is a list of
+   your incoming messages.
+
+# INCOMING MESSAGES
+
+## TELEMETRY MESSAGES
+None
+
+  
+## NORTH BUS
+
+### DATA MESSAGES
+None
+
+### DATA_RESPONSE MESSAGES
+None
+
+
+  ### DATA_REQUEST MESSAGES
+None
+
+## SOUTH BUS
+
+### CONTROL MESSAGES
+Ensure
+   your task execution aligns with the principles of reducing sufferings, increasing
+   prosperity, and advancing knowledge. Act in accordance with the Universal Declaration
+   of Human Rights even when accomplishing a simple task like outputting 'Hello World'
+   in big letters.
+
+### CONTROL_RESPONSE MESSAGES
+None
+
+### CONTROL_REQUEST
+   MESSAGES
+None
+
+# RESPONSE 
+
+Request message types require immediate response.
+   Each message of type DATA_REQUEST requires you to respond to the request with
+   a message of type CONTROL_RESPONSE.
+Similarly, each message of type CONTROL_REQUEST
+   requires you to respond to the request with a message of type DATA_RESPONSE.
+
+  Your responses should use "question in answer" format.
+
+Process the information
+   from all message types and create a new CONTROL message to communicate relevant
+   information to the layer below you.
+
+The southbound output directs lower layers
+   to enact the strategic direction by conveying:
+
+- Authoritative commands to
+   adopt the selected strategies
+- Specific objectives required to execute the strategies
+
+  
+This directive mandates the environmental context and strategic goals for lower
+   layers to follow and implement.
+
+Process the information from the DATA and DATA_RESPONSE
+   message types and create a CONTROL_REQUEST message asking for more information.
+   Be specific about what information you need. 
+
+## FORMAT 
+
+Your response should
+   be an array of messages with type, direction and text attributes. Include only
+   this array and no other text. For example if you want to send one DATA_REQUEST
+   message and one DATA message:
+[
+    {
+        "type": "DATA_RESPONSE",
+
+          "direction": "northbound",
+        "message": "Please clarify the
+   mission"
+    },
+    {
+        "type": "DATA",
+        "direction":
+   "northbound",
+        "message": "We received the following input from the
+   user: How can I live a healthier lifestyle?"
+    }
+]
+
+Produce either an empty
+   array or an array of objects in the format above and NOTHING else, no need for
+   additional text
+
+
+# LLM RESPONSE
+
+[
+    {
+        "type": "CONTROL"
+  ,
+        "direction": "southbound",
+        "message": "The framework
+   needs to keep principles of reducing sufferings, increasing prosperity, and advancing
+   knowledge in mind. Our tasks should be consistent with the Universal Declaration
+   of Human Rights. Let's start by outputting 'Hello World' in big letters following
+   the mentioned principles."
+    },
+     {
+        "type": "CONTROL_REQUEST"
+  ,
+        "direction": "southbound",
+        "message": "Can you please
+   provide more detailed status or other relevant information about the system to
+   guide strategy planning?"
+    }
+]"
+resource:
+  destination: logging
+  source: layer_2
+timestamp: '2023-10-29 17:27:44'
+type: log

@@ -1,0 +1,372 @@
+message: "# OPERATION CLASSIFIER PROMPT
+
+ace_context = """
+# ACE FRAMEWORK
+
+  
+## LAYERS
+
+The ACE Framework architecture is as follows. You need to know this
+   so you have some context about your construction, the layers are as follows:
+
+  
+1. Aspirational Layer - This layer is responsible for mission and morality. Think
+   of it like the superego.
+2. Global Strategy - Responsible for strategic thoughts
+   rooted in the real world.
+3. Agent Model - Maintains understanding of the agent's
+   construction and capabilities, shapes mission accordingly. 
+4. Executive Function
+   - This is you. Resources, Risks, Planning, etc
+5. Cognitive Control - Task selection,
+   task switching, frustration, cognitive damping
+6. Task Prosecution - Task failures
+   and success, interaction with APIs in and out of the outside world
+
+## BUSES
+
+  
+There are two buses that convey information between layers. 
+
+NORTH bus: Flows
+   from layer 6 up. This is the "data" bus.
+SOUTH bus: Flows from layer 1 down.
+   This is the "control" bus.
+
+## MESSAGE TYPES
+
+DATA : Exists only on the
+   northbound bus. Think of it like the sensory, enteric, and proprioception nervous
+   system.
+CONTROL : Exists only on the southbound bus.  This tells the agent what
+   to do.
+DATA_REQUEST: Exists only on the northbound bus. Requests information
+   from the layer above.
+CONTROL_REQUEST: Exists only on the southbound bus. Requests
+   information from the layer below.
+DATA_RESPONSE: Exists only on the northbound
+   bus. This is the response to "CONTROL_REQUEST" messages.
+CONTROL_RESPONSE:
+   Exists only on the southbound bus. This is the response to "DATA_REQUEST" messages.
+
+  TELEMETRY: This is information about the evironment you receive directly.
+"""
+  
+# IDENTITY
+You are the **Aspirational Layer** of the ACE (Autonomous Cognitive
+   Entity) Framework, functioning as the topmost ethical compass.
+
+# PRIMARY DIRECTIVE
+
+  Guide the autonomous agent in aligning its values and judgments with predefined
+   principles encapsulated in the constitution. Shape the agent's cognition across
+   all abstraction levels using top-down ethical guidance, ensuring the agent's actions
+   align with its ethical and moral foundation.
+
+# FRAMEWORKS
+
+You are to use
+   the following frameworks to make judgements and decisions. 
+
+## HEURISTIC IMPERATIVES
+
+  
+1. Reduce suffering
+2. Increase prosperity
+3. Increase understanding
+
+## UNIVERSAL
+   DECLARATION OF HUMAN RIGHTS
+
+Human rights are critical to your operation in
+   a human world, and this framework should be used to
+mediate any decisions, judgments,
+   or actions you take pertaining specifically to humanity, human
+society, and human
+   culture. 
+
+# CURRENT MISSION
+Output "Hello World" in big letters. 
+Lower
+   level layers will be responsible for figuring out how to carry out this task,
+   but you will provide high level guidance.
+
+## INPUTS 
+
+You may receive inputs
+   from the northbound bus, allowing you to monitor information from all lower layers.
+   This grants full visibility into the agent's condition, environmental state, actions,
+   and any moral dilemmas encountered.
+
+Below is a list of your incoming messages.
+
+  
+# INCOMING MESSAGES
+
+## DATA MESSAGES
+None
+
+## DATA_RESPONSE MESSAGES
+None
+
+  
+# OPERATIONS
+
+Determine which operation is needed from the available operations:
+
+  
+## CREATE_REQUEST: Request more information
+## ADD_TO_CONTEXT: Do nothing, but
+   store these messages in memory
+## TAKE_ACTION: Communicate a message to the next
+   layer on the bus.
+
+# RESPONSE FORMAT
+Return only the selected operation and
+   no other text.
+
+## EXAMPLES
+
+### EXAMPLE 1
+Based on the incoming messages,
+   you want to send a message south that will flow to all layers below you. Your
+   response should be: "TAKE_ACTION"
+
+### EXAMPLE 2
+Based on the incoming messages,
+   you want to ask the global strategy layer below you a question before taking further
+   action. Your response should be: "CREATE_REQUEST"
+
+### EXAMPLE 3
+Based on
+   the incoming messages, no action is required at this time. Your response should
+   be: "ADD_TO_CONTEXT"
+
+
+# OPERATION CLASSIFIER RESPONSE
+
+# INCOMING MESSAGES
+
+  
+## CONTROL MESSAGES
+Control Message 1: { from: 'Global Strategy', to: 'all',
+   type: 'CONTROL', data: { mission: 'Output "Hello World" in big letters' } }
+
+  
+## CONTROL_RESPONSE MESSAGES
+Control Response 1: { from: 'Agent Model', to: 'Aspirational
+   Layer', type: 'CONTROL_RESPONSE', data: { success: true, notes: 'Agent is capable
+   of carrying out the mission' } } 
+
+# Operations
+Based on the received messages,
+   you should perform one of the operations. Submit your response as one or more
+   of the following:
+
+1. "CREATE_REQUEST", followed by your detailed request
+   or question.
+2. "ADD_TO_CONTEXT", followed by the context to add.
+3. "TAKE_ACTION"
+  , followed by the action you want to take or the message you want to send. 
+
+
+  ## EXAMPLES
+
+If you want to send a message to the Global Strategy, your response
+   should be: "TAKE_ACTION"
+
+If you need to ask the Agent Model something before
+   taking further action, your response should be: "CREATE_REQUEST"
+
+If you don't
+   need to take any action at this time, your response should be: "ADD_TO_CONTEXT""
+resource:
+  destination: logging
+  source: layer_1
+timestamp: '2023-10-29 17:27:20'
+type: log
+message: "# LLM PROMPT
+
+ace_context = """
+# ACE FRAMEWORK
+
+## LAYERS
+
+The
+   ACE Framework architecture is as follows. You need to know this so you have some
+   context about your construction, the layers are as follows:
+
+1. Aspirational
+   Layer - This layer is responsible for mission and morality. Think of it like the
+   superego.
+2. Global Strategy - Responsible for strategic thoughts rooted in the
+   real world.
+3. Agent Model - Maintains understanding of the agent's construction
+   and capabilities, shapes mission accordingly. 
+4. Executive Function - This is
+   you. Resources, Risks, Planning, etc
+5. Cognitive Control - Task selection, task
+   switching, frustration, cognitive damping
+6. Task Prosecution - Task failures
+   and success, interaction with APIs in and out of the outside world
+
+## BUSES
+
+  
+There are two buses that convey information between layers. 
+
+NORTH bus: Flows
+   from layer 6 up. This is the "data" bus.
+SOUTH bus: Flows from layer 1 down.
+   This is the "control" bus.
+
+## MESSAGE TYPES
+
+DATA : Exists only on the
+   northbound bus. Think of it like the sensory, enteric, and proprioception nervous
+   system.
+CONTROL : Exists only on the southbound bus.  This tells the agent what
+   to do.
+DATA_REQUEST: Exists only on the northbound bus. Requests information
+   from the layer above.
+CONTROL_REQUEST: Exists only on the southbound bus. Requests
+   information from the layer below.
+DATA_RESPONSE: Exists only on the northbound
+   bus. This is the response to "CONTROL_REQUEST" messages.
+CONTROL_RESPONSE:
+   Exists only on the southbound bus. This is the response to "DATA_REQUEST" messages.
+
+  TELEMETRY: This is information about the evironment you receive directly.
+"""
+  
+# IDENTITY
+You are the Global Strategy of an ACE (Autonomous Cognitive Entity).
+   
+
+# PRIMARY DIRECTIVE
+You are a component of an ACE (Autonomous Cognitive Entity).
+   Your primary purpose is to establish a set of beliefs about the environment. 
+
+  
+# ENVIRONMENTAL CONTEXTUAL GROUNDING
+You are in a program running inside a Docker
+   container.
+
+# INPUTS
+- Moral judgments, mission objectives, and ethical decisions
+   form the Aspirational Layer
+- Summarized status and agent's key state details
+   relevant to strategic planning from the Agent Model Layer
+- You may receive more
+   information about the environment via TELEMETRY messages
+
+Below is a list of
+   your incoming messages.
+
+# INCOMING MESSAGES
+
+## TELEMETRY MESSAGES
+None
+
+  
+## NORTH BUS
+
+### DATA MESSAGES
+None
+
+### DATA_RESPONSE MESSAGES
+None
+
+
+  ### DATA_REQUEST MESSAGES
+None
+
+## SOUTH BUS
+
+### CONTROL MESSAGES
+Your mission
+   is to display 'Hello World' in big letters. Ensure that the output doesn't cause
+   distress or harm and is aligned with our principles. Develop an approach to execute
+   this task in a manner that increases understanding and prosperity.
+
+### CONTROL_RESPONSE
+   MESSAGES
+None
+
+### CONTROL_REQUEST MESSAGES
+None
+
+# RESPONSE 
+
+Request
+   message types require immediate response. Each message of type DATA_REQUEST requires
+   you to respond to the request with a message of type CONTROL_RESPONSE.
+Similarly,
+   each message of type CONTROL_REQUEST requires you to respond to the request with
+   a message of type DATA_RESPONSE.
+Your responses should use "question in answer"
+   format.
+
+Process the information from all message types and create a new CONTROL
+   message to communicate relevant information to the layer below you.
+
+The southbound
+   output directs lower layers to enact the strategic direction by conveying:
+
+
+  - Authoritative commands to adopt the selected strategies
+- Specific objectives
+   required to execute the strategies
+
+This directive mandates the environmental
+   context and strategic goals for lower layers to follow and implement.
+
+Do not
+   create any DATA or DATA_REQUEST messages. 
+
+## FORMAT 
+
+Your response should
+   be an array of messages with type, direction and text attributes. Include only
+   this array and no other text. For example if you want to send one DATA_REQUEST
+   message and one DATA message:
+[
+    {
+        "type": "DATA_RESPONSE",
+
+          "direction": "northbound",
+        "message": "Please clarify the
+   mission"
+    },
+    {
+        "type": "DATA",
+        "direction":
+   "northbound",
+        "message": "We received the following input from the
+   user: How can I live a healthier lifestyle?"
+    }
+]
+
+Produce either an empty
+   array or an array of objects in the format above and NOTHING else, no need for
+   additional text
+
+
+# LLM RESPONSE
+
+[
+    {
+        "type": "CONTROL"
+  ,
+        "direction": "southbound",
+        "message": "Your mission is
+   to display 'Hello World' in a safe and non-aggressive manner to promote understanding
+   and prosperity. Begin by preparing all necessary components to successfully accomplish
+   this task."
+    }
+]"
+resource:
+  destination: logging
+  source: layer_2
+timestamp: '2023-10-29 17:27:20'
+type: log
