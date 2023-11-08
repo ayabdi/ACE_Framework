@@ -93,7 +93,7 @@ class Layer1(Layer):
 
         return op_description
 
-    def process_layer_messages(self, control_messages, data_messages, request_messages, response_messages, telemetry_messages):
+    def process_layer_messages(self, control_messages, data_messages, request_messages, response_messages, telemetry_messages, messages_history):
         identity_dir = self.get_identities_dir()
         identity_env = Environment(loader=FileSystemLoader(identity_dir))
         identity = identity_env.get_template("l1_identity.md").render()
@@ -107,6 +107,11 @@ class Layer1(Layer):
             return [], []
         data_req_messages, control_req_messages = self.parse_req_resp_messages(request_messages)
         data_resp_messages, control_resp_messages = self.parse_req_resp_messages(response_messages)
+
+        ## Exit if no layer messages are present i.e. data_req_messages, control_req_messages, data_resp_messages, control_resp_messages, data_messages, control_messages
+        if all(not messages for messages in [data_req_messages, control_req_messages, data_resp_messages, control_resp_messages, data_messages, control_messages]):
+            return [], []
+        
         prompt_messages = {
             "data": self.get_messages_for_prompt(data_messages),
             "data_resp": self.get_messages_for_prompt(data_resp_messages),
@@ -146,6 +151,10 @@ class Layer1(Layer):
         if op_prompt == do_nothing_data:
             return [], []
         
+        history_prompt = env.get_template("layer_history.md").render(
+            messages_history=messages_history
+        )
+
         l1_layer_instructions = env.get_template("l1_layer_instructions.md")
 
         layer1_instructions = l1_layer_instructions.render(
@@ -155,7 +164,8 @@ class Layer1(Layer):
             data_resp=prompt_messages["data_resp"],
             data_req=prompt_messages["data_req"],
             telemetry=prompt_messages["telemetry"],
-            operation_prompt=op_prompt
+            operation_prompt=op_prompt,
+            history=history_prompt
         )
 
         llm_messages: [GptMessage] = [

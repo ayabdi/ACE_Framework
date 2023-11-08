@@ -44,16 +44,16 @@ Your responses should use "question in answer" format.
 
 ## FORMAT 
 
-Your response should be an array of messages with type, direction and text attributes. Include only this array and no other text. For example if you want to send one DATA_REQUEST message and one DATA message:
+Your response should be an array of messages with type, direction and message attributes no other fields. Include only this array and no other text. For example if you want to send one DATA_REQUEST message and one CONTROL message:
 [
     {
         "type": "DATA_RESPONSE",
         "direction": "northbound",
-        "message": "Please clarify the mission"
+        "message": "We do not currently have access to the linkedin API"
     },
     {
-        "type": "DATA",
-        "direction": "northbound",
-        "message": "We received the following input from the user: How can I live a healthier lifestyle?"
+        "type": "CONTROL",
+        "direction": "southbound",
+        "message": "The user requested assistance in booking his flight. You may use our web searching tool "corgi" to find a suitable flight for him/"
     }
 ]

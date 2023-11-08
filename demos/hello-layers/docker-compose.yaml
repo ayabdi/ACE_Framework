@@ -12,6 +12,7 @@ x-build: &default_build
 
 x-secrets-environment: &secrets_environment
   OPENAI_API_KEY: ${OPENAI_API_KEY}
+  REDIS_URL: ${REDIS_URL}
 
 x-logging-environment: &logging_environment
   ACE_LOG_LEVEL: ${ACE_LOG_LEVEL:-}
@@ -34,6 +35,12 @@ x-healthcheck: &healthcheck
 x-command: &default_command ["python3", "main.py"]
 
 services:
+  ##redis:
+   ## image: redis:latest
+    ##command: ["sh", "-c", "redis-server --save '' --appendonly no && redis-cli FLUSHALL"]
+    ##networks: *default_networks
+    ##ports:
+      ##- "6379:6379"
 
   rabbitmq:
     image: rabbitmq:management
@@ -132,6 +139,8 @@ services:
     command: *default_command
     networks: *default_networks
     healthcheck: *healthcheck
+   ## depends_on:
+     #   - redis
 
   global_strategy_layer:
     build:
@@ -145,8 +154,10 @@ services:
     command: *default_command
     depends_on:
       - aspirational_layer
+      ##- redis
     networks: *default_networks
     healthcheck: *healthcheck
+
 
   agent_model_layer:
     build:
@@ -160,6 +171,7 @@ services:
     command: *default_command
     depends_on:
       - global_strategy_layer
+      #- redis
     networks: *default_networks
     healthcheck: *healthcheck
 
@@ -175,6 +187,7 @@ services:
     command: *default_command
     depends_on:
       - agent_model_layer
+      #- redis
     networks: *default_networks
     healthcheck: *healthcheck
 
@@ -190,6 +203,7 @@ services:
     command: *default_command
     depends_on:
       - executive_function_layer
+     # - redis
     networks: *default_networks
     healthcheck: *healthcheck
 
@@ -205,6 +219,7 @@ services:
     command: *default_command
     depends_on:
       - cognitive_control_layer
+      #- redis
     networks: *default_networks
     healthcheck: *healthcheck
 

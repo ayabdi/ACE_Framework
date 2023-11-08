@@ -6,6 +6,8 @@ from datetime import datetime
 import yaml
 import asyncio
 import aio_pika
+import redis
+import json
 from threading import Thread
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
@@ -16,7 +18,6 @@ from ace.api_endpoint import ApiEndpoint
 from ace.amqp.connection import get_connection
 
 from ace.logger import Logger
-
 
 class Resource(ABC):
     def __init__(self):
@@ -33,6 +34,8 @@ class Resource(ABC):
         self.publish_messages = False
         self.set_debug_state()
 
+        redis_url = 'redis://localhost:6379/0'
+        self.redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
     @property
     @abstractmethod
     def settings(self) -> Settings:
@@ -343,7 +346,7 @@ class Resource(ABC):
         self.log.info(f"{self.labeled_name} resource log: \n\n{message}\n\n")
         log_message = self.build_message('logging', message={'message': message}, message_type='log')
 
-        self.write_messages_to_file(log_message.decode())
+        self.log_prompt_to_file(log_message.decode())
         self.push_exchange_message_to_publisher_local_queue(self.settings.resource_log_queue, log_message)
 
     def telemetry_subscribe_to_namespace(self, namespace):
@@ -357,10 +360,10 @@ class Resource(ABC):
         message = self.build_message('telemetry', message={'queue': self.build_telemetry_queue_name(self.settings.name), 'namespace': namespace}, message_type=message_type)
         self.push_exchange_message_to_publisher_local_queue(self.settings.telemetry_subscribe_queue, message)
 
-    def write_messages_to_file(self, message):
+    def log_prompt_to_file(self, message):
         # Define the directory where the messages will be saved
         current_dir = os.path.dirname(os.path.realpath(__file__))
-        messages_dir = os.path.join(current_dir, 'logs')
+        messages_dir = os.path.join(current_dir, 'logs/prompts')
 
         # Ensure the directory exists
         os.makedirs(messages_dir, exist_ok=True)
@@ -370,10 +373,79 @@ class Resource(ABC):
         timestamp = now.strftime("%Y%m%d_%H%M%S")
 
         # Use the timestamp in the filename
-        messages_filename = f"{timestamp}_messages.txt"
+        messages_filename = f"{timestamp}_{self.labeled_name}_messages.txt"
         messages_filepath = os.path.join(messages_dir, messages_filename)
 
         # Open the file in append mode
         with open(messages_filepath, "a") as file:
             # Write the message to the file
             file.write(message)
+
+    
+    def log_message_to_file(self, message, direction):
+        # Define the directory where the messages will be saved
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+        messages_dir = os.path.join(current_dir, 'logs/messages')
+
+        # Ensure the directory exists
+        os.makedirs(messages_dir, exist_ok=True)
+
+        # Get the current date and time
+        now = datetime.now()
+        timestamp = now.strftime("%Y%m%d_%H%M%S")
+
+        # Use the timestamp in the filename
+        messages_filename = f"{timestamp}_{self.labeled_name}_recevied_{direction}_message.txt"
+        messages_filepath = os.path.join(messages_dir, messages_filename)
+
+        # Open the file in append mode
+        with open(messages_filepath, "a") as file:
+            # Write the message to the file
+            file.write(message)
+
+    def build_redis_message(self, destination, message=None, message_type='data'):
+        obj = {}
+        obj['message'] = message['message']
+        obj['type'] = message_type
+        obj['resource'] = {
+            'source': self.settings.name,
+            'destination': destination,
+        }
+        obj['timestamp'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        return obj
+    
+    def save_message_history_to_redis(self, message, layer):
+        # Define the key for the message
+        key = f"{layer}"
+        # Get the existing messages
+        existing_messages = self.redis_client.get(key)
+        if existing_messages is not None:
+            existing_messages = json.loads(existing_messages)
+        else:
+            existing_messages = []
+        # Append the new message
+        existing_messages.append(message)
+        # Save the updated messages list as a JSON string
+        self.redis_client.set(key, json.dumps(existing_messages))
+
+    def get_messages_history(self):
+        # Define the key for the message
+        layer = self.settings.name
+        key = f"{layer}"
+        # Get the messages JSON string from Redis
+        messages_json = self.redis_client.get(key)
+        # If there are messages, return them
+        if messages_json is not None:
+            messages = json.loads(messages_json)
+            # append "YOU" to every message source or destination that is the current layer
+            for i, message in enumerate(messages):
+                if message['resource']['source'] == self.settings.name:
+                    message['resource']['source'] += " YOU"
+                if message['resource']['destination'] == self.settings.name:
+                    message['resource']['destination'] += " YOU"
+                # Dump the message dictionary as a YAML string
+                messages[i] = yaml.dump(message, default_flow_style=False)
+            return messages
+        # Otherwise, return an empty list
+        else:
+            return []

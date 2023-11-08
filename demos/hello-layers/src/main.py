@@ -32,6 +32,7 @@ def loader(resource_name):
 def main():
     ace_resource_name = os.getenv('ACE_RESOURCE_NAME')
     logger.info(f"Starting ACE resource: {ace_resource_name}")
+    
     result = loader(ace_resource_name)
     while result:
         time.sleep(1000)

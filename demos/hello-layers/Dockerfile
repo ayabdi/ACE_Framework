@@ -15,3 +15,5 @@ RUN pip install -e .
 
 COPY src/check_resource_health.py /usr/local/bin/check_resource_health.py
 RUN chmod +x /usr/local/bin/check_resource_health.py
+RUN which python3
+RUN python3 -c "import redis; print(redis.__file__)"

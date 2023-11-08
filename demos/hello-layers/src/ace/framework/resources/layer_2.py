@@ -26,13 +26,29 @@ class Layer2(Layer):
         self.log.debug(f"Checking {self.labeled_name} status")
         return self.return_status(True)
 
-    def process_layer_messages(self, control_messages, data_messages, request_messages, response_messages, telemetry_messages):
+    def process_layer_messages(self, control_messages, data_messages, request_messages, response_messages, telemetry_messages, messages_history):
         identity_dir = self.get_identities_dir()
         identity_env = Environment(loader=FileSystemLoader(identity_dir))
         identity = identity_env.get_template("l2_identity.md").render()
 
         data_req_messages, control_req_messages = self.parse_req_resp_messages(request_messages)
         data_resp_messages, control_resp_messages = self.parse_req_resp_messages(response_messages)
+
+        self.log.debug(f"HISTORY: {messages_history}")
+
+        ## Exit if no layer messages are present i.e. data_req_messages, control_req_messages, data_resp_messages, control_resp_messages, data_messages, control_messages, telemetry_messages
+        if all(not messages for messages in [data_req_messages, control_req_messages, data_resp_messages, control_resp_messages, data_messages, control_messages]):
+            return [], []
+
+        ## log all messages to ace log
+        self.log.debug(f"Processing {data_req_messages} data_req_messages")
+        self.log.debug(f"Processing {control_req_messages} control_req_messages")
+        self.log.debug(f"Processing {data_resp_messages} data_resp_messages")
+        self.log.debug(f"Processing {control_resp_messages} control_resp_messages")
+        self.log.debug(f"Processing {data_messages} data_messages")
+        self.log.debug(f"Processing {control_messages} control_messages")
+        self.log.debug(f"Processing {telemetry_messages} telemetry_messages")
+        
         prompt_messages = {
             "data" : self.get_messages_for_prompt(data_messages),
             "data_resp" : self.get_messages_for_prompt(data_resp_messages),
@@ -70,7 +86,13 @@ class Layer2(Layer):
         self.resource_log(op_log_message)
         south_op_prompt, north_op_prompt = self.get_op_description(llm_op_response_content, "l2_south.md", "l2_north.md")
         
+                
+        history_prompt = env.get_template("layer_history.md").render(
+            messages_history=messages_history
+        )
+        self.log.debug(f"messages_history: {messages_history}")
         layer_instructions = env.get_template("layer_instructions.md")
+
         layer2_instructions = layer_instructions.render(
             ace_context = ace_context,
             identity = identity,
@@ -82,7 +104,8 @@ class Layer2(Layer):
             control_req = prompt_messages["control_req"],
             telemetry = prompt_messages["telemetry"],
             control_operation_prompt = south_op_prompt,
-            data_operation_prompt =  north_op_prompt
+            data_operation_prompt =  north_op_prompt,
+            history = history_prompt
         )
 
         llm_messages: [GptMessage] = [

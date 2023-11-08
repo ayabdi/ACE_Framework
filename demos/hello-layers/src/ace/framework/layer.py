@@ -12,7 +12,7 @@ from ace.settings import Settings
 from ace.framework.resource import Resource
 from ace.framework.llm.gpt import GPT
 from ace.framework.util import parse_json
-
+from datetime import datetime
 
 class LayerSettings(Settings):
     mode: str = 'OpenAI'
@@ -25,6 +25,8 @@ class Layer(Resource):
     def __init__(self):
         super().__init__()
         self.layer_running = False
+
+
 
     async def post_connect(self):
         self.set_adjacent_layers()
@@ -208,14 +210,34 @@ class Layer(Resource):
 
     def agent_run_and_publish(self, control_messages, data_messages, request_messages, response_messages, telemetry_messages):
         self.log.info(f"[{self.labeled_name}] agent run and publish...")
-        messages_northbound, messages_southbound = self.process_layer_messages(control_messages, data_messages, request_messages, response_messages, telemetry_messages)
+
+        message_history = self.get_messages_history()
+        self.log.debug(f"[{self.labeled_name}] message history: {message_history}")
+
+        messages_northbound, messages_southbound = self.process_layer_messages(control_messages, data_messages, request_messages, response_messages, telemetry_messages, message_history)
         if messages_northbound and self.northern_layer:
             for m in messages_northbound:
-                message = self.build_message(self.northern_layer, message=m, message_type=m['type'])
+                source = self.settings.name
+                destination = self.northern_layer
+                message = self.build_message(destination, message=m, message_type=m['type'])
+
+                if m['type'] != 'ping' and m['type'] != 'pong':
+                    redis_message = self.build_redis_message(destination, message=m, message_type=m['type'])
+                    self.save_message_history_to_redis(redis_message, destination)
+                    self.save_message_history_to_redis(redis_message, source)
+
                 self.push_exchange_message_to_publisher_local_queue(f"northbound.{self.northern_layer}", message)
         if messages_southbound and self.southern_layer:
             for m in messages_southbound:
+                source = self.settings.name
+                destination = self.southern_layer
                 message = self.build_message(self.southern_layer, message=m, message_type=m['type'])
+
+                if m['type'] != 'ping' and m['type'] != 'pong':
+                    redis_message = self.build_redis_message(destination, message=m, message_type=m['type'])
+                    self.save_message_history_to_redis(redis_message, destination)
+                    self.save_message_history_to_redis(redis_message, source)
+                    
                 self.push_exchange_message_to_publisher_local_queue(f"southbound.{self.southern_layer}", message)
 
     def agent_run_layer(self):
@@ -302,11 +324,14 @@ class Layer(Resource):
 
     async def northbound_message_handler(self, message: aio_pika.IncomingMessage):
         self.log.debug(f"[{self.labeled_name}] received a [Northbound] message")
+        self.log_message_to_file(message.body.decode(), 'northbound')
+
         async with message.process():
             await self.route_message('northbound', message)
 
     async def southbound_message_handler(self, message: aio_pika.IncomingMessage):
         self.log.debug(f"[{self.labeled_name}] received a [Southbound] message")
+        self.log_message_to_file(message.body.decode(), 'southbound')
         async with message.process():
             await self.route_message('southbound', message)
 

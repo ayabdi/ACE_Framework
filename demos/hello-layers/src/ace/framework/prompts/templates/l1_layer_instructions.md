@@ -23,6 +23,8 @@ DATA_REQUEST message types require immediate response. You must have exactly one
 
 {{operation_prompt}}
 
+{{history}}
+
 ## FORMAT
 
 Your response should be an array of messages with type, direction and text attributes. 

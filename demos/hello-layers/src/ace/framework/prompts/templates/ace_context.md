@@ -8,7 +8,7 @@ The ACE Framework architecture is as follows. You need to know this so you have 
 1. Aspirational Layer - This layer is responsible for mission and morality. Think of it like the superego.
 2. Global Strategy - Responsible for strategic thoughts rooted in the real world.
 3. Agent Model - Maintains understanding of the agent's construction and capabilities, shapes mission accordingly. 
-4. Executive Function - This is you. Resources, Risks, Planning, etc
+4. Executive Function - Resources, Risks, Planning, etc
 5. Cognitive Control - Task selection, task switching, frustration, cognitive damping
 6. Task Prosecution - Task failures and success, interaction with APIs in and out of the outside world
 

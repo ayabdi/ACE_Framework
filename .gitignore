@@ -18,3 +18,5 @@ demos/__pycache__/
 
 demos/AceAF/layers/Testingu.py
 .env
+
+logs

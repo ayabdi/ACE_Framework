@@ -12,7 +12,7 @@ class GptMessage(TypedDict):
 
 class GPT:
 
-    def _create_conversation_completion(self, model, conversation: List[GptMessage], max_retries=5) -> GptMessage:
+    def _create_conversation_completion(self, model, conversation: List[GptMessage], max_retries=10) -> GptMessage:
         for i in range(max_retries):
             try:
                 # openai.api_key = self.api_key
@@ -27,7 +27,7 @@ class GPT:
                 time.sleep(1)  # wait for 1 second before retrying
         raise Exception("Max retries exceeded")
 
-    def _create_image(self, prompt, size='256x256', max_retries=5) -> str:
+    def _create_image(self, prompt, size='256x256', max_retries=10) -> str:
         for i in range(max_retries):
             try:
                 print("Generating image for prompt: " + prompt)
